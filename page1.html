@@ -251,11 +251,20 @@
     window.addEventListener('beforeunload', sendLeave);
     window.addEventListener('pagehide', sendLeave);
 
-    // 触发震动
+    // 触发震动（Android）或强烈视觉反馈（iOS）
     function triggerHaptic() {
+      // Android Chrome
       if ('vibrate' in navigator) {
         navigator.vibrate([80, 40, 80]);
       }
+      // iOS / 通用：连续闪烁模拟震动感
+      const el = document.getElementById('productImage');
+      let count = 0;
+      const shake = setInterval(() => {
+        el.style.transform = count % 2 === 0 ? 'translateX(4px)' : 'translateX(-4px)';
+        count++;
+        if (count >= 6) { clearInterval(shake); el.style.transform = ''; }
+      }, 40);
     }
 
     // 图片点击 - 震动 + 视觉反馈
