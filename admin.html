@@ -302,8 +302,13 @@
           fetch('/api/stats'),
           fetch('/api/data')
         ]);
-        const stats = await statsRes.json();
-        const detail = await detailRes.json();
+        const statsRaw = await statsRes.json();
+        const detailRaw = await detailRes.json();
+        const stats  = Array.isArray(statsRaw)  ? statsRaw  : [];
+        const detail = Array.isArray(detailRaw) ? detailRaw : [];
+        if (!statsRes.ok || !detailRes.ok) {
+          console.warn('API 错误:', statsRaw, detailRaw);
+        }
         renderStats(stats, detail);
         renderDetail(detail);
         document.getElementById('lastRefresh').textContent =
