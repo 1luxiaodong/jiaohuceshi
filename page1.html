@@ -76,6 +76,21 @@
       font-size: 13px;
     }
 
+    /* 抖动动画（模拟震动触感） */
+    @keyframes hapticShake {
+      0%   { transform: translateX(0); }
+      15%  { transform: translateX(-6px); }
+      30%  { transform: translateX(6px); }
+      45%  { transform: translateX(-5px); }
+      60%  { transform: translateX(5px); }
+      75%  { transform: translateX(-3px); }
+      90%  { transform: translateX(3px); }
+      100% { transform: translateX(0); }
+    }
+    .product-image-wrap.shaking {
+      animation: hapticShake 0.35s ease;
+    }
+
     /* 触感波纹动画 */
     .ripple-ring {
       position: absolute;
@@ -251,20 +266,14 @@
     window.addEventListener('beforeunload', sendLeave);
     window.addEventListener('pagehide', sendLeave);
 
-    // 触发震动（Android）或强烈视觉反馈（iOS）
+    // 触发震动反馈（CSS抖动 + Android原生震动）
     function triggerHaptic() {
-      // Android Chrome
-      if ('vibrate' in navigator) {
-        navigator.vibrate([80, 40, 80]);
-      }
-      // iOS / 通用：连续闪烁模拟震动感
+      if ('vibrate' in navigator) navigator.vibrate([60, 30, 60]);
       const el = document.getElementById('productImage');
-      let count = 0;
-      const shake = setInterval(() => {
-        el.style.transform = count % 2 === 0 ? 'translateX(4px)' : 'translateX(-4px)';
-        count++;
-        if (count >= 6) { clearInterval(shake); el.style.transform = ''; }
-      }, 40);
+      el.classList.remove('shaking');
+      void el.offsetWidth; // 强制重排，确保动画重新触发
+      el.classList.add('shaking');
+      el.addEventListener('animationend', () => el.classList.remove('shaking'), { once: true });
     }
 
     // 图片点击 - 震动 + 视觉反馈
