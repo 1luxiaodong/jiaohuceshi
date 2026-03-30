@@ -376,7 +376,9 @@
     window.addEventListener('pagehide', sendLeave);
 
     function triggerHaptic() {
-      if ('vibrate' in navigator) navigator.vibrate([60, 30, 60]);
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 80, 200, 80, 200]);
+      }
       const el = document.getElementById('productImage');
       el.classList.remove('shaking');
       void el.offsetWidth;

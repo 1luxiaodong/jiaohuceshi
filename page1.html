@@ -268,10 +268,15 @@
 
     // 触发震动反馈（CSS抖动 + Android原生震动）
     function triggerHaptic() {
-      if ('vibrate' in navigator) navigator.vibrate([60, 30, 60]);
+      if ('vibrate' in navigator) {
+        const ok = navigator.vibrate([200, 80, 200, 80, 200]);
+        console.log('vibrate called, result:', ok);
+      } else {
+        console.log('vibrate NOT supported');
+      }
       const el = document.getElementById('productImage');
       el.classList.remove('shaking');
-      void el.offsetWidth; // 强制重排，确保动画重新触发
+      void el.offsetWidth;
       el.classList.add('shaking');
       el.addEventListener('animationend', () => el.classList.remove('shaking'), { once: true });
     }
