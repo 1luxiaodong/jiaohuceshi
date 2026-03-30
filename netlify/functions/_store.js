@@ -1,12 +1,19 @@
-// 用 Netlify Blobs 存储数据（无需外部数据库）
 const { getStore } = require('@netlify/blobs');
 
-const STORE_NAME = 'ux-sessions';
 const KEY = 'all';
+
+function getBlobStore() {
+  const siteID = process.env.NETLIFY_SITE_ID;
+  const token  = process.env.NETLIFY_TOKEN;
+  if (!siteID || !token) {
+    throw new Error(`Blobs 配置缺失: NETLIFY_SITE_ID=${siteID ? '✓' : '❌'}, NETLIFY_TOKEN=${token ? '✓' : '❌'}`);
+  }
+  return getStore({ name: 'ux-sessions', siteID, token });
+}
 
 async function readSessions() {
   try {
-    const store = getStore(STORE_NAME);
+    const store = getBlobStore();
     const raw = await store.get(KEY, { type: 'text' });
     if (!raw) return [];
     return JSON.parse(raw);
@@ -16,7 +23,7 @@ async function readSessions() {
 }
 
 async function writeSessions(sessions) {
-  const store = getStore(STORE_NAME);
+  const store = getBlobStore();
   await store.set(KEY, JSON.stringify(sessions));
 }
 
