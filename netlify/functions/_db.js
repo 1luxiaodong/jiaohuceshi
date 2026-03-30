@@ -3,7 +3,11 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 async function db(path, options = {}) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    throw new Error(`环境变量未设置: SUPABASE_URL=${SUPABASE_URL ? '✓' : '✗'}, SUPABASE_SERVICE_KEY=${SUPABASE_KEY ? '✓' : '✗'}`);
+  }
+  const url = `${SUPABASE_URL}/rest/v1${path}`;
+  const res = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -14,7 +18,7 @@ async function db(path, options = {}) {
   });
   if (res.status === 204) return null;
   const text = await res.text();
-  if (!res.ok) throw new Error(`Supabase error: ${text}`);
+  if (!res.ok) throw new Error(`Supabase ${res.status}: ${text}`);
   return text ? JSON.parse(text) : null;
 }
 
