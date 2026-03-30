@@ -109,10 +109,8 @@ app.get('/api/stats', (req, res) => {
   res.json(stats);
 });
 
-// ============ API: 导出 Excel ============
-app.get('/api/export', (req, res) => {
-  const rows = db.prepare('SELECT * FROM sessions ORDER BY created_at DESC').all();
-
+// ============ 导出 Excel 公共函数 ============
+function buildExcel(rows, label) {
   const detail = rows.map(r => ({
     '记录ID': r.id,
     'IP地址': r.ip,
@@ -120,55 +118,57 @@ app.get('/api/export', (req, res) => {
     '页面名称': r.page_label,
     '进入时间': r.enter_time ? new Date(r.enter_time).toLocaleString('zh-CN') : '',
     '离开时间': r.leave_time ? new Date(r.leave_time).toLocaleString('zh-CN') : '',
-    '停留时长(秒)': r.dwell_seconds || '',
-    '衣服点击次数': r.image_clicks,
+    '停留时长(秒)': r.dwell_seconds ?? '',
+    '商品点击次数': r.image_clicks,
     '购物车点击次数': r.cart_clicks,
     '记录时间': r.created_at
   }));
 
-  const stats = db.prepare(`
-    SELECT page, page_label,
-      COUNT(*) as visit_count,
-      COUNT(DISTINCT ip) as unique_visitors,
-      ROUND(AVG(dwell_seconds), 2) as avg_dwell_seconds,
-      ROUND(MAX(dwell_seconds), 2) as max_dwell_seconds,
-      ROUND(MIN(dwell_seconds), 2) as min_dwell_seconds,
-      SUM(image_clicks) as total_image_clicks,
-      SUM(cart_clicks) as total_cart_clicks
-    FROM sessions WHERE dwell_seconds IS NOT NULL GROUP BY page ORDER BY page
-  `).all();
-
-  const summary = stats.map(s => ({
-    '页面': s.page,
-    '页面名称': s.page_label,
-    '访问次数': s.visit_count,
-    '独立访客数': s.unique_visitors,
-    '平均停留时长(秒)': s.avg_dwell_seconds,
-    '最长停留时长(秒)': s.max_dwell_seconds,
-    '最短停留时长(秒)': s.min_dwell_seconds,
-    '衣服总点击次数': s.total_image_clicks,
-    '购物车总点击次数': s.total_cart_clicks
-  }));
+  const completed = rows.filter(r => r.dwell_seconds != null);
+  const byPage = {};
+  completed.forEach(r => {
+    if (!byPage[r.page]) byPage[r.page] = { page: r.page, page_label: r.page_label, rows: [] };
+    byPage[r.page].rows.push(r);
+  });
+  const summary = Object.values(byPage).map(g => {
+    const dwells = g.rows.map(r => r.dwell_seconds);
+    return {
+      '页面': g.page,
+      '页面名称': g.page_label,
+      '访问次数': g.rows.length,
+      '平均停留时长(秒)': +(dwells.reduce((a,b)=>a+b,0)/dwells.length).toFixed(2),
+      '最长停留时长(秒)': +Math.max(...dwells).toFixed(2),
+      '最短停留时长(秒)': +Math.min(...dwells).toFixed(2),
+      '商品总点击次数': g.rows.reduce((s,r)=>s+(r.image_clicks||0),0),
+      '购物车总点击次数': g.rows.reduce((s,r)=>s+(r.cart_clicks||0),0)
+    };
+  }).sort((a,b)=>a['页面'].localeCompare(b['页面']));
 
   const wb = XLSX.utils.book_new();
-  const ws1 = XLSX.utils.json_to_sheet(detail);
-  const ws2 = XLSX.utils.json_to_sheet(summary);
-  XLSX.utils.book_append_sheet(wb, ws2, '汇总统计');
-  XLSX.utils.book_append_sheet(wb, ws1, '详细记录');
+  const ws1 = XLSX.utils.json_to_sheet(summary);
+  const ws2 = XLSX.utils.json_to_sheet(detail);
+  ws1['!cols'] = [{wch:8},{wch:22},{wch:10},{wch:16},{wch:16},{wch:16},{wch:16},{wch:18}];
+  ws2['!cols'] = [{wch:8},{wch:18},{wch:8},{wch:22},{wch:22},{wch:22},{wch:14},{wch:14},{wch:16},{wch:22}];
+  XLSX.utils.book_append_sheet(wb, ws1, '汇总统计');
+  XLSX.utils.book_append_sheet(wb, ws2, '详细记录');
+  return { wb, label };
+}
 
-  // 设置列宽
-  ws1['!cols'] = [
-    {wch:8},{wch:18},{wch:8},{wch:20},{wch:22},{wch:22},
-    {wch:14},{wch:14},{wch:16},{wch:22}
-  ];
-  ws2['!cols'] = [
-    {wch:8},{wch:20},{wch:10},{wch:12},{wch:18},
-    {wch:18},{wch:18},{wch:16},{wch:18}
-  ];
-
+// ============ API: 导出全部 Excel ============
+app.get('/api/export', (req, res) => {
+  const page = req.query.page;
+  let rows, label;
+  if (page) {
+    rows = db.prepare('SELECT * FROM sessions WHERE page=? ORDER BY created_at DESC').all(page);
+    const labelRow = db.prepare('SELECT page_label FROM sessions WHERE page=? LIMIT 1').get(page);
+    label = labelRow ? labelRow.page_label : page;
+  } else {
+    rows = db.prepare('SELECT * FROM sessions ORDER BY created_at DESC').all();
+    label = '全部';
+  }
+  const { wb } = buildExcel(rows, label);
   const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-  const filename = `ux_test_${new Date().toISOString().slice(0,10)}.xlsx`;
-
+  const filename = `ux_test_${label}_${new Date().toISOString().slice(0,10)}.xlsx`;
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
   res.send(buffer);

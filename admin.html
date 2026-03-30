@@ -7,204 +7,120 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
       background: #f0f2f5;
-      min-height: 100vh;
       color: #1a1a1a;
     }
 
-    /* 顶部标题栏 */
     .header {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
       color: #fff;
-      padding: 24px 32px;
+      padding: 24px 28px 20px;
     }
-    .header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .header p { font-size: 13px; color: rgba(255,255,255,0.55); }
-    .header-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
+    .header h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .header p  { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .header-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
 
-    /* 按钮样式 */
     .btn {
-      padding: 9px 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      padding: 8px 18px; border: none; border-radius: 6px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary  { background: #4f46e5; color: #fff; }
     .btn-primary:hover { background: #4338ca; }
-    .btn-success { background: #059669; color: #fff; }
+    .btn-success  { background: #059669; color: #fff; }
     .btn-success:hover { background: #047857; }
-    .btn-danger  { background: #dc2626; color: #fff; }
+    .btn-danger   { background: #dc2626; color: #fff; }
     .btn-danger:hover  { background: #b91c1c; }
-    .btn-outline {
-      background: transparent;
-      color: #fff;
-      border: 1.5px solid rgba(255,255,255,0.35);
-    }
+    .btn-outline  { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.35); }
     .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
 
-    /* 统计卡片区 */
-    .main { padding: 24px 32px; }
-    .stats-grid {
+    .refresh-time { font-size: 11px; color: rgba(255,255,255,0.35); margin-left: 4px; }
+
+    .main { padding: 20px 28px; }
+
+    /* 总览卡片 */
+    .overview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-    .stat-card .label {
-      font-size: 12px;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-    .stat-card .value {
-      font-size: 32px;
-      font-weight: 700;
-      color: #1a1a1a;
-      line-height: 1;
-    }
-    .stat-card .sub {
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 6px;
-    }
-    .stat-card.accent-blue .value { color: #4f46e5; }
-    .stat-card.accent-green .value { color: #059669; }
-    .stat-card.accent-orange .value { color: #ea580c; }
-    .stat-card.accent-rose .value { color: #e11d48; }
-
-    /* 对比表格区 */
-    .section {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
       margin-bottom: 24px;
-      overflow: hidden;
+    }
+    .ov-card {
+      background: #fff; border-radius: 10px; padding: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .ov-card .lbl { font-size: 11px; color: #999; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 6px; }
+    .ov-card .val { font-size: 28px; font-weight: 700; line-height: 1; }
+    .ov-card .sub { font-size: 11px; color: #bbb; margin-top: 5px; }
+    .c-blue   .val { color: #4f46e5; }
+    .c-green  .val { color: #059669; }
+    .c-orange .val { color: #ea580c; }
+    .c-rose   .val { color: #e11d48; }
+
+    /* 每个方案的卡片 */
+    .page-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .page-card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .page-card-header {
+      padding: 14px 16px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .page-card-header .name { font-size: 14px; font-weight: 700; color: #fff; }
+    .page-card-header .count { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+    .h-a { background: linear-gradient(120deg,#7c3aed,#a855f7); }
+    .h-b { background: linear-gradient(120deg,#1d4ed8,#3b82f6); }
+    .h-c { background: linear-gradient(120deg,#065f46,#10b981); }
+    .h-d { background: linear-gradient(120deg,#92400e,#f59e0b); }
+
+    .page-card-body { padding: 14px 16px; }
+    .metric-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 0; border-bottom: 1px solid #f5f5f5;
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { font-size: 13px; color: #666; }
+    .metric-value { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    .metric-value.big { font-size: 18px; color: #4f46e5; }
+
+    .page-card-footer {
+      padding: 10px 16px;
+      border-top: 1px solid #f5f5f5;
+      display: flex; gap: 8px;
+    }
+
+    /* 详细记录表格 */
+    .section {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
     }
     .section-header {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-bottom: 1px solid #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    .section-subtitle {
-      font-size: 12px;
-      color: #999;
-      margin-top: 2px;
-    }
-
-    /* 进度条对比 */
-    .compare-grid {
-      padding: 20px;
-      display: grid;
-      gap: 20px;
-    }
-    .compare-row {
-      display: grid;
-      grid-template-columns: 160px 1fr 60px;
-      align-items: center;
-      gap: 12px;
-    }
-    .compare-label { font-size: 13px; color: #555; }
-    .bar-wrap {
-      height: 10px;
-      background: #f0f0f0;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: 5px;
-      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
-    }
-    .bar-a { background: linear-gradient(90deg, #a855f7, #7c3aed); }
-    .bar-b { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
-    .bar-c { background: linear-gradient(90deg, #10b981, #059669); }
-    .bar-d { background: linear-gradient(90deg, #f59e0b, #d97706); }
-    .compare-num { font-size: 13px; font-weight: 600; color: #333; text-align: right; }
-
-    /* 详细数据表格 */
+    .section-title { font-size: 14px; font-weight: 600; }
     .table-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead th {
-      background: #f8f9fa;
-      padding: 11px 14px;
-      text-align: left;
-      font-weight: 600;
-      color: #555;
-      font-size: 12px;
-      white-space: nowrap;
-      border-bottom: 1px solid #eee;
+      background: #f8f9fa; padding: 10px 14px;
+      text-align: left; font-weight: 600; color: #666;
+      font-size: 12px; white-space: nowrap; border-bottom: 1px solid #eee;
     }
-    tbody td {
-      padding: 11px 14px;
-      border-bottom: 1px solid #f5f5f5;
-      color: #333;
-      white-space: nowrap;
-    }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; color: #333; white-space: nowrap; }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover td { background: #fafafa; }
-    .page-badge {
-      display: inline-block;
-      padding: 2px 9px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 500;
-    }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
     .badge-page1 { background: #ede9fe; color: #6d28d9; }
     .badge-page2 { background: #dbeafe; color: #1d4ed8; }
     .badge-page3 { background: #d1fae5; color: #065f46; }
     .badge-page4 { background: #fef3c7; color: #92400e; }
 
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: #ccc;
-    }
-    .empty-state p { font-size: 14px; }
-
-    .refresh-time {
-      font-size: 11px;
-      color: #bbb;
-      margin-left: 8px;
-    }
-
     @media (max-width: 600px) {
-      .header { padding: 20px 16px; }
-      .main { padding: 16px; }
-      .compare-row { grid-template-columns: 120px 1fr 50px; }
+      .header, .main { padding-left: 16px; padding-right: 16px; }
     }
   </style>
 </head>
@@ -212,76 +128,61 @@
 
   <div class="header">
     <h1>📊 用户体验测试 · 数据管理</h1>
-    <p>触觉反馈对比实验 · 实时数据统计</p>
+    <p>触觉反馈对比实验 · 四方案统计</p>
     <div class="header-actions">
-      <button class="btn btn-success" onclick="exportExcel()">⬇ 导出 Excel</button>
-      <button class="btn btn-outline" onclick="loadData()">↻ 刷新数据</button>
+      <button class="btn btn-primary" onclick="loadData()">↻ 刷新数据</button>
+      <button class="btn btn-success" onclick="exportPage('all')">⬇ 导出全部</button>
       <button class="btn btn-danger" onclick="clearData()">🗑 清空数据</button>
+      <span class="refresh-time" id="lastRefresh"></span>
     </div>
   </div>
 
   <div class="main">
-    <!-- 汇总卡片 -->
-    <div class="stats-grid" id="statsCards">
-      <div class="stat-card accent-blue">
-        <div class="label">总访问次数</div>
-        <div class="value" id="totalVisits">—</div>
-        <div class="sub">所有页面累计</div>
+    <!-- 总览 -->
+    <div class="overview-grid">
+      <div class="ov-card c-blue">
+        <div class="lbl">总访问次数</div>
+        <div class="val" id="totalVisits">—</div>
+        <div class="sub">所有方案累计</div>
       </div>
-      <div class="stat-card accent-green">
-        <div class="label">独立访客</div>
-        <div class="value" id="uniqueVisitors">—</div>
+      <div class="ov-card c-green">
+        <div class="lbl">独立访客</div>
+        <div class="val" id="uniqueVisitors">—</div>
         <div class="sub">按IP去重</div>
       </div>
-      <div class="stat-card accent-orange">
-        <div class="label">衣服总点击</div>
-        <div class="value" id="totalImageClicks">—</div>
-        <div class="sub">图片点击次数</div>
+      <div class="ov-card c-orange">
+        <div class="lbl">商品总点击</div>
+        <div class="val" id="totalImageClicks">—</div>
+        <div class="sub">点击衣服图片</div>
       </div>
-      <div class="stat-card accent-rose">
-        <div class="label">购物车总点击</div>
-        <div class="value" id="totalCartClicks">—</div>
-        <div class="sub">加入购物车次数</div>
+      <div class="ov-card c-rose">
+        <div class="lbl">购物车总点击</div>
+        <div class="val" id="totalCartClicks">—</div>
+        <div class="sub">加入购物车</div>
       </div>
     </div>
 
-    <!-- 各方案对比 -->
-    <div class="section">
-      <div class="section-header">
-        <div>
-          <div class="section-title">各方案对比</div>
-          <div class="section-subtitle">四个测试页面的指标横向比较</div>
-        </div>
-        <span class="refresh-time" id="lastRefresh"></span>
-      </div>
-      <div class="compare-grid" id="compareGrid">
-        <div class="empty-state"><p>暂无数据，等待用户访问...</p></div>
-      </div>
+    <!-- 四方案单独统计 -->
+    <div class="page-cards" id="pageCards">
+      <!-- 动态渲染 -->
     </div>
 
     <!-- 详细记录 -->
     <div class="section">
       <div class="section-header">
-        <div>
-          <div class="section-title">详细访问记录</div>
-          <div class="section-subtitle">每次访问的完整数据</div>
-        </div>
+        <div class="section-title">详细访问记录</div>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>IP地址</th>
-              <th>页面方案</th>
-              <th>进入时间</th>
-              <th>停留时长</th>
-              <th>衣服点击</th>
-              <th>购物车点击</th>
+              <th>#</th><th>IP地址</th><th>方案</th>
+              <th>进入时间</th><th>停留时长</th>
+              <th>商品点击</th><th>购物车点击</th>
             </tr>
           </thead>
           <tbody id="detailTable">
-            <tr><td colspan="7" class="empty-state"><p>暂无记录</p></td></tr>
+            <tr><td colspan="7" style="text-align:center;padding:32px;color:#ccc">点击「刷新数据」加载</td></tr>
           </tbody>
         </table>
       </div>
@@ -289,106 +190,86 @@
   </div>
 
   <script>
-    const PAGE_COLORS = {
-      page1: 'badge-page1',
-      page2: 'badge-page2',
-      page3: 'badge-page3',
-      page4: 'badge-page4'
-    };
+    const PAGE_CONFIGS = [
+      { id: 'page1', label: '方案A：震动反馈',           hClass: 'h-a', badge: 'badge-page1' },
+      { id: 'page2', label: '方案B：文字描述',           hClass: 'h-b', badge: 'badge-page2' },
+      { id: 'page3', label: '方案C：购物车按钮',         hClass: 'h-c', badge: 'badge-page3' },
+      { id: 'page4', label: '方案D：震动+描述+购物车',   hClass: 'h-d', badge: 'badge-page4' },
+    ];
+
+    function exportPage(pageId) {
+      const url = pageId === 'all' ? '/api/export' : `/api/export?page=${pageId}`;
+      window.location.href = url;
+    }
 
     async function loadData() {
       try {
         const [statsRes, detailRes] = await Promise.all([
-          fetch('/api/stats'),
-          fetch('/api/data')
+          fetch('/api/stats'), fetch('/api/data')
         ]);
-        const statsRaw = await statsRes.json();
-        const detailRaw = await detailRes.json();
-        const stats  = Array.isArray(statsRaw)  ? statsRaw  : [];
-        const detail = Array.isArray(detailRaw) ? detailRaw : [];
-        if (!statsRes.ok || !detailRes.ok) {
-          console.warn('API 错误:', statsRaw, detailRaw);
-        }
-        renderStats(stats, detail);
-        renderDetail(detail);
+        const stats  = await statsRes.json();
+        const detail = await detailRes.json();
+        const statsArr  = Array.isArray(stats)  ? stats  : [];
+        const detailArr = Array.isArray(detail) ? detail : [];
+
+        renderOverview(statsArr, detailArr);
+        renderPageCards(statsArr);
+        renderDetail(detailArr);
+
         document.getElementById('lastRefresh').textContent =
-          '最后刷新：' + new Date().toLocaleTimeString('zh-CN');
+          '最后更新：' + new Date().toLocaleTimeString('zh-CN');
       } catch(e) {
-        console.error('加载数据失败', e);
+        console.error('加载失败', e);
       }
     }
 
-    function renderStats(stats, detail) {
-      const totalVisits = detail.length;
-      const uniqueIPs = new Set(detail.map(d => d.ip)).size;
-      const totalImg = detail.reduce((s, d) => s + (d.image_clicks || 0), 0);
-      const totalCart = detail.reduce((s, d) => s + (d.cart_clicks || 0), 0);
+    function renderOverview(stats, detail) {
+      document.getElementById('totalVisits').textContent = detail.length;
+      document.getElementById('uniqueVisitors').textContent = new Set(detail.map(d => d.ip)).size;
+      document.getElementById('totalImageClicks').textContent = detail.reduce((s,d) => s+(d.image_clicks||0), 0);
+      document.getElementById('totalCartClicks').textContent  = detail.reduce((s,d) => s+(d.cart_clicks||0), 0);
+    }
 
-      document.getElementById('totalVisits').textContent = totalVisits;
-      document.getElementById('uniqueVisitors').textContent = uniqueIPs;
-      document.getElementById('totalImageClicks').textContent = totalImg;
-      document.getElementById('totalCartClicks').textContent = totalCart;
+    function renderPageCards(stats) {
+      const statsMap = {};
+      stats.forEach(s => { statsMap[s.page] = s; });
 
-      if (!stats.length) {
-        document.getElementById('compareGrid').innerHTML =
-          '<div class="empty-state"><p>暂无足够数据</p></div>';
-        return;
-      }
+      const html = PAGE_CONFIGS.map(cfg => {
+        const s = statsMap[cfg.id];
+        const visits   = s ? s.visit_count : 0;
+        const avgDwell = s ? s.avg_dwell_seconds : '—';
+        const imgClk   = s ? s.total_image_clicks : 0;
+        const cartClk  = s ? s.total_cart_clicks : 0;
 
-      const maxDwell = Math.max(...stats.map(s => s.avg_dwell_seconds || 0), 1);
-      const maxImg   = Math.max(...stats.map(s => s.total_image_clicks || 0), 1);
-      const maxCart  = Math.max(...stats.map(s => s.total_cart_clicks || 0), 1);
-      const maxVisit = Math.max(...stats.map(s => s.visit_count || 0), 1);
+        return `
+          <div class="page-card">
+            <div class="page-card-header ${cfg.hClass}">
+              <div>
+                <div class="name">${cfg.label}</div>
+                <div class="count">共 ${visits} 次访问</div>
+              </div>
+            </div>
+            <div class="page-card-body">
+              <div class="metric-row">
+                <span class="metric-label">⏱ 平均停留时长</span>
+                <span class="metric-value big">${avgDwell !== '—' ? avgDwell + 's' : '—'}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">👆 商品点击次数</span>
+                <span class="metric-value">${imgClk}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label">🛒 购物车点击次数</span>
+                <span class="metric-value">${cartClk}</span>
+              </div>
+            </div>
+            <div class="page-card-footer">
+              <button class="btn btn-success btn-sm" onclick="exportPage('${cfg.id}')">⬇ 导出本方案</button>
+            </div>
+          </div>`;
+      }).join('');
 
-      const barClasses = ['bar-a', 'bar-b', 'bar-c', 'bar-d'];
-      const pageMap = { page1: 0, page2: 1, page3: 2, page4: 3 };
-
-      const metrics = [
-        {
-          key: 'avg_dwell_seconds',
-          label: '平均停留时长 (秒)',
-          max: maxDwell,
-          fmt: v => (v || 0).toFixed(1) + 's'
-        },
-        {
-          key: 'visit_count',
-          label: '访问次数',
-          max: maxVisit,
-          fmt: v => v || 0
-        },
-        {
-          key: 'total_image_clicks',
-          label: '衣服点击次数',
-          max: maxImg,
-          fmt: v => v || 0
-        },
-        {
-          key: 'total_cart_clicks',
-          label: '购物车点击次数',
-          max: maxCart,
-          fmt: v => v || 0
-        }
-      ];
-
-      let html = '';
-      metrics.forEach(metric => {
-        html += `<div style="margin-bottom:4px"><div style="font-size:12px;color:#888;font-weight:600;margin-bottom:8px;text-transform:uppercase">${metric.label}</div>`;
-        stats.forEach(s => {
-          const idx = pageMap[s.page] ?? 0;
-          const barClass = barClasses[idx];
-          const val = s[metric.key] || 0;
-          const pct = Math.round((val / metric.max) * 100);
-          html += `
-            <div class="compare-row">
-              <div class="compare-label" style="font-size:12px">${s.page_label}</div>
-              <div class="bar-wrap"><div class="bar-fill ${barClass}" style="width:${pct}%"></div></div>
-              <div class="compare-num">${metric.fmt(val)}</div>
-            </div>`;
-        });
-        html += '</div>';
-      });
-
-      document.getElementById('compareGrid').innerHTML = html;
+      document.getElementById('pageCards').innerHTML = html;
     }
 
     function renderDetail(detail) {
@@ -397,47 +278,32 @@
           '<tr><td colspan="7" style="text-align:center;padding:32px;color:#ccc">暂无访问记录</td></tr>';
         return;
       }
-
-      const rows = detail.slice(0, 100).map(r => {
-        const badge = PAGE_COLORS[r.page] || 'badge-page1';
-        const enterTime = r.enter_time
-          ? new Date(r.enter_time).toLocaleString('zh-CN', { hour12: false })
-          : '—';
-        const dwell = r.dwell_seconds != null
-          ? r.dwell_seconds.toFixed(1) + 's'
-          : '—';
+      const badgeMap = { page1:'badge-page1', page2:'badge-page2', page3:'badge-page3', page4:'badge-page4' };
+      const rows = detail.slice(0, 200).map(r => {
+        const badge = badgeMap[r.page] || 'badge-page1';
+        const t = r.enter_time ? new Date(r.enter_time).toLocaleString('zh-CN',{hour12:false}) : '—';
+        const d = r.dwell_seconds != null ? r.dwell_seconds.toFixed(1) + 's' : '—';
         return `<tr>
           <td style="color:#aaa">${r.id}</td>
           <td style="font-family:monospace;font-size:12px">${r.ip}</td>
-          <td><span class="page-badge ${badge}">${r.page_label}</span></td>
-          <td>${enterTime}</td>
-          <td><strong>${dwell}</strong></td>
-          <td>${r.image_clicks}</td>
-          <td>${r.cart_clicks}</td>
+          <td><span class="badge ${badge}">${r.page_label}</span></td>
+          <td>${t}</td>
+          <td><strong>${d}</strong></td>
+          <td>${r.image_clicks || 0}</td>
+          <td>${r.cart_clicks || 0}</td>
         </tr>`;
       }).join('');
-
       document.getElementById('detailTable').innerHTML = rows;
-    }
-
-    function exportExcel() {
-      window.location.href = '/api/export';
     }
 
     async function clearData() {
       if (!confirm('确定要清空所有实验数据吗？此操作不可撤销。')) return;
-      try {
-        await fetch('/api/data', { method: 'DELETE' });
-        loadData();
-        alert('数据已清空');
-      } catch(e) {
-        alert('清空失败：' + e.message);
-      }
+      await fetch('/api/data', { method: 'DELETE' });
+      loadData();
     }
 
-    // 初始加载并自动刷新
+    // 页面加载时主动拉一次
     loadData();
-    setInterval(loadData, 15000);
   </script>
 </body>
 </html>
