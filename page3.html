@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>商品详情</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .nav-back { font-size: 20px; color: #333; padding: 4px 8px 4px 0; }
+    .nav-title { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #333; }
+    .nav-placeholder { width: 36px; }
+
+    .product-image-wrap {
+      position: relative;
+      background: #fff;
+      margin-bottom: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .product-image-wrap img { width: 100%; display: block; }
+
+    .product-info {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+    .product-price { display: none; }
+    .product-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .product-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      border-radius: 3px;
+      padding: 2px 6px;
+    }
+
+    .spec-section {
+      background: #fff;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .spec-title { font-size: 13px; color: #999; margin-bottom: 10px; }
+    .spec-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .spec-item {
+      padding: 6px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+    }
+    .spec-item.active { border-color: #ff2d55; color: #ff2d55; background: #fff5f7; }
+
+    /* 底部购物栏 */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 10px 16px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      gap: 10px;
+      z-index: 200;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    }
+    .btn-wishlist {
+      flex: 0 0 52px;
+      height: 46px;
+      background: #fff;
+      border: 1.5px solid #ff2d55;
+      border-radius: 23px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-wishlist:active { background: #fff0f3; }
+    .btn-cart {
+      flex: 1;
+      height: 46px;
+      background: linear-gradient(90deg, #ff6b35, #ff2d55);
+      border: none;
+      border-radius: 23px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-cart:active { opacity: 0.88; transform: scale(0.98); }
+    .cart-icon { font-size: 18px; }
+
+    /* 加入购物车成功提示 */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .bottom-spacer { height: 80px; }
+  </style>
+</head>
+<body>
+
+  <div class="nav-bar">
+    <span class="nav-back" onclick="history.length>1?history.back():location.href='index.html'" style="cursor:pointer">‹</span>
+    <span class="nav-title">商品详情</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <div class="product-image-wrap" id="productImage">
+    <img src="close.avif" alt="白色针织毛衣">
+  </div>
+
+  <div class="product-info">
+    <div class="product-name">【柔软亲肤】白色针织毛衣女秋冬宽松慵懒风百搭上衣</div>
+    <div class="product-tags">
+      <span class="tag">柔软针织</span>
+      <span class="tag">亲肤透气</span>
+      <span class="tag">弹性舒适</span>
+    </div>
+  </div>
+
+  <div class="spec-section">
+    <div class="spec-title">选择尺码</div>
+    <div class="spec-list">
+      <div class="spec-item">S</div>
+      <div class="spec-item active">M</div>
+      <div class="spec-item">L</div>
+      <div class="spec-item">XL</div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+
+  <!-- 底部购物栏 -->
+  <div class="bottom-bar">
+    <div class="btn-wishlist">♡</div>
+    <button class="btn-cart" id="cartBtn">
+      <span class="cart-icon">🛒</span>
+      加入购物车
+    </button>
+  </div>
+
+  <div class="toast" id="toast">已加入购物车 ✓</div>
+
+  <script>
+    const PAGE_ID = 'page3';
+    const PAGE_LABEL = '方案C：购物车按钮';
+    let sessionId = null;
+    let imageClicks = 0;
+    let cartClicks = 0;
+    const enterTime = Date.now();
+
+    fetch('/api/enter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: PAGE_ID, page_label: PAGE_LABEL, enter_time: enterTime })
+    }).then(r => r.json()).then(d => { sessionId = d.session_id; });
+
+    function sendLeave() {
+      if (!sessionId) return;
+      const data = JSON.stringify({
+        session_id: sessionId,
+        leave_time: Date.now(),
+        image_clicks: imageClicks,
+        cart_clicks: cartClicks
+      });
+      navigator.sendBeacon('/api/leave', new Blob([data], { type: 'application/json' }));
+    }
+    window.addEventListener('beforeunload', sendLeave);
+    window.addEventListener('pagehide', sendLeave);
+
+    document.getElementById('productImage').addEventListener('click', function() {
+      imageClicks++;
+      if (sessionId) {
+        fetch('/api/click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, type: 'image' })
+        });
+      }
+    });
+
+    document.getElementById('cartBtn').addEventListener('click', function() {
+      cartClicks++;
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+      if (sessionId) {
+        fetch('/api/click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, type: 'cart' })
+        });
+      }
+    });
+
+    document.querySelectorAll('.spec-item').forEach(el => {
+      el.addEventListener('click', function() {
+        document.querySelectorAll('.spec-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

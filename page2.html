@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>商品详情</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .nav-back { font-size: 20px; color: #333; padding: 4px 8px 4px 0; }
+    .nav-title { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: #333; }
+    .nav-placeholder { width: 36px; }
+
+    .product-image-wrap {
+      position: relative;
+      background: #fff;
+      margin-bottom: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .product-image-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    .product-info {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+    .product-price { display: none; }
+    .product-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .product-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      border-radius: 3px;
+      padding: 2px 6px;
+    }
+
+    /* 材质描述区域 */
+    .material-section {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+    .material-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .material-title::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 16px;
+      background: #ff2d55;
+      border-radius: 2px;
+    }
+    .material-text {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.9;
+      letter-spacing: 0.3px;
+    }
+    .material-text p {
+      margin-bottom: 4px;
+    }
+
+    /* 面料特性标签 */
+    .fabric-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .fabric-item {
+      background: #fafafa;
+      border: 1px solid #f0f0f0;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+    .fabric-icon { font-size: 20px; margin-bottom: 4px; }
+    .fabric-name { font-size: 12px; color: #555; }
+
+    .spec-section {
+      background: #fff;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .spec-title { font-size: 13px; color: #999; margin-bottom: 10px; }
+    .spec-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .spec-item {
+      padding: 6px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+    }
+    .spec-item.active { border-color: #ff2d55; color: #ff2d55; background: #fff5f7; }
+
+    .bottom-spacer { height: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="nav-bar">
+    <span class="nav-back" onclick="history.length>1?history.back():location.href='index.html'" style="cursor:pointer">‹</span>
+    <span class="nav-title">商品详情</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <div class="product-image-wrap" id="productImage">
+    <img src="close.avif" alt="白色针织毛衣" id="productImg">
+  </div>
+
+  <div class="product-info">
+    <div class="product-name">【柔软亲肤】白色针织毛衣女秋冬宽松慵懒风百搭上衣</div>
+    <div class="product-tags">
+      <span class="tag">柔软针织</span>
+      <span class="tag">亲肤透气</span>
+      <span class="tag">弹性舒适</span>
+    </div>
+  </div>
+
+  <!-- 材质描述 -->
+  <div class="material-section">
+    <div class="material-title">面料质感</div>
+    <div class="material-text">
+      <p>这款白色毛衣采用柔软的针织面料制成。面料细腻顺滑，触感亲肤，贴身穿着不会产生刺痒感。织物具有一定弹性，并具有良好的透气性。整体质地柔软，表面纹理细致，穿着时带来温暖舒适的触感。</p>
+    </div>
+    <div class="fabric-features">
+      <div class="fabric-item">
+        <div class="fabric-icon">🧶</div>
+        <div class="fabric-name">柔软针织</div>
+      </div>
+      <div class="fabric-item">
+        <div class="fabric-icon">🌬️</div>
+        <div class="fabric-name">透气舒适</div>
+      </div>
+      <div class="fabric-item">
+        <div class="fabric-icon">✨</div>
+        <div class="fabric-name">细腻顺滑</div>
+      </div>
+      <div class="fabric-item">
+        <div class="fabric-icon">🤸</div>
+        <div class="fabric-name">弹性伸展</div>
+      </div>
+      <div class="fabric-item">
+        <div class="fabric-icon">🌸</div>
+        <div class="fabric-name">亲肤无刺</div>
+      </div>
+      <div class="fabric-item">
+        <div class="fabric-icon">🌡️</div>
+        <div class="fabric-name">温暖保暖</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spec-section">
+    <div class="spec-title">选择尺码</div>
+    <div class="spec-list">
+      <div class="spec-item">S</div>
+      <div class="spec-item active">M</div>
+      <div class="spec-item">L</div>
+      <div class="spec-item">XL</div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+
+  <script>
+    const PAGE_ID = 'page2';
+    const PAGE_LABEL = '方案B：文字描述';
+    let sessionId = null;
+    let imageClicks = 0;
+    let cartClicks = 0;
+    const enterTime = Date.now();
+
+    fetch('/api/enter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: PAGE_ID, page_label: PAGE_LABEL, enter_time: enterTime })
+    }).then(r => r.json()).then(d => { sessionId = d.session_id; });
+
+    function sendLeave() {
+      if (!sessionId) return;
+      const data = JSON.stringify({
+        session_id: sessionId,
+        leave_time: Date.now(),
+        image_clicks: imageClicks,
+        cart_clicks: cartClicks
+      });
+      navigator.sendBeacon('/api/leave', new Blob([data], { type: 'application/json' }));
+    }
+    window.addEventListener('beforeunload', sendLeave);
+    window.addEventListener('pagehide', sendLeave);
+
+    document.getElementById('productImage').addEventListener('click', function() {
+      imageClicks++;
+      if (sessionId) {
+        fetch('/api/click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, type: 'image' })
+        });
+      }
+    });
+
+    document.querySelectorAll('.spec-item').forEach(el => {
+      el.addEventListener('click', function() {
+        document.querySelectorAll('.spec-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

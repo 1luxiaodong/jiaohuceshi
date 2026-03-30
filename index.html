@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>用户体验测试</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      color: #fff;
+    }
+
+    .logo {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    /* 实验方案卡片 */
+    .cards {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .card:active, .card:hover {
+      background: rgba(255,255,255,0.14);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .icon-a { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+    .icon-b { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .icon-c { background: linear-gradient(135deg, #10b981, #059669); }
+    .icon-d { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .card-info { flex: 1; }
+    .card-scheme {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .card-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+    .card-arrow {
+      font-size: 18px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* 功能标签 */
+    .card-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .ctag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .ctag-vibrate { background: rgba(168,85,247,0.25); color: #c084fc; }
+    .ctag-text    { background: rgba(59,130,246,0.25); color: #93c5fd; }
+    .ctag-cart    { background: rgba(16,185,129,0.25); color: #6ee7b7; }
+
+    /* 提示说明 */
+    .tip-box {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 28px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .tip-title {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .tip-item {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.8;
+      display: flex;
+      gap: 6px;
+    }
+    .tip-item::before { content: '·'; color: rgba(255,255,255,0.3); }
+
+  </style>
+</head>
+<body>
+
+
+
+  <div class="cards">
+
+    <!-- 方案 A -->
+    <a href="page1.html" class="card">
+      <div class="card-icon icon-a">📳</div>
+      <div class="card-info">
+        <div class="card-scheme">方案 A</div>
+        <div class="card-name">震动反馈</div>
+        <div class="card-desc">点击商品图片触发手机震动</div>
+        <div class="card-tags">
+          <span class="ctag ctag-vibrate">震动反馈</span>
+        </div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <!-- 方案 B -->
+    <a href="page2.html" class="card">
+      <div class="card-icon icon-b">📝</div>
+      <div class="card-info">
+        <div class="card-scheme">方案 B</div>
+        <div class="card-name">文字描述</div>
+        <div class="card-desc">展示详细的面料材质描述文案</div>
+        <div class="card-tags">
+          <span class="ctag ctag-text">材质描述</span>
+        </div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <!-- 方案 C -->
+    <a href="page3.html" class="card">
+      <div class="card-icon icon-c">🛒</div>
+      <div class="card-info">
+        <div class="card-scheme">方案 C</div>
+        <div class="card-name">购物车按钮</div>
+        <div class="card-desc">仅图片展示 + 加入购物车操作</div>
+        <div class="card-tags">
+          <span class="ctag ctag-cart">购物车</span>
+        </div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <!-- 方案 D -->
+    <a href="page4.html" class="card">
+      <div class="card-icon icon-d">✨</div>
+      <div class="card-info">
+        <div class="card-scheme">方案 D</div>
+        <div class="card-name">完整体验</div>
+        <div class="card-desc">震动 + 材质描述 + 加入购物车</div>
+        <div class="card-tags">
+          <span class="ctag ctag-vibrate">震动反馈</span>
+          <span class="ctag ctag-text">材质描述</span>
+          <span class="ctag ctag-cart">购物车</span>
+        </div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+  </div>
+
+
+</body>
+</html>

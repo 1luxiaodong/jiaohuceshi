@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>商品详情</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* 顶部导航 */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .nav-back {
+      font-size: 20px;
+      color: #333;
+      padding: 4px 8px 4px 0;
+    }
+    .nav-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    .nav-placeholder { width: 36px; }
+
+    /* 商品图片区域 */
+    .product-image-wrap {
+      position: relative;
+      background: #fff;
+      margin-bottom: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .product-image-wrap img {
+      width: 100%;
+      display: block;
+      transition: transform 0.15s ease;
+    }
+    .product-image-wrap.tapped img {
+      transform: scale(0.97);
+    }
+
+    /* 震动提示角标 */
+    .haptic-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      backdrop-filter: blur(4px);
+    }
+    .haptic-badge::before {
+      content: '📳';
+      font-size: 13px;
+    }
+
+    /* 触感波纹动画 */
+    .ripple-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.8);
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+      transition: none;
+    }
+    .ripple-ring.animate {
+      animation: rippleOut 0.6s ease-out forwards;
+    }
+    @keyframes rippleOut {
+      0%   { transform: scale(0); opacity: 0.9; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    /* 商品信息 */
+    .product-info {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+    .product-price { display: none; }
+    .product-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .product-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      color: #ff6b35;
+      border: 1px solid #ff6b35;
+      border-radius: 3px;
+      padding: 2px 6px;
+    }
+
+    /* 规格选择区域 */
+    .spec-section {
+      background: #fff;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .spec-title {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+    .spec-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .spec-item {
+      padding: 6px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .spec-item.active {
+      border-color: #ff2d55;
+      color: #ff2d55;
+      background: #fff5f7;
+    }
+
+    /* 底部占位 */
+    .bottom-spacer { height: 20px; }
+
+    /* 点击反馈提示 */
+    .touch-hint {
+      text-align: center;
+      padding: 14px 16px;
+      background: #fff;
+      margin-bottom: 8px;
+    }
+    .touch-hint p {
+      font-size: 13px;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff2d55;
+      animation: pulseDot 1.4s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div class="nav-bar">
+    <span class="nav-back" onclick="history.length>1?history.back():location.href='index.html'" style="cursor:pointer">‹</span>
+    <span class="nav-title">商品详情</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 商品图片 -->
+  <div class="product-image-wrap" id="productImage">
+    <img src="close.avif" alt="白色针织毛衣" id="productImg">
+    <div class="haptic-badge">触感体验</div>
+  </div>
+
+
+
+  <!-- 商品信息 -->
+  <div class="product-info">
+    <div class="product-name">【柔软亲肤】白色针织毛衣女秋冬宽松慵懒风百搭上衣</div>
+    <div class="product-tags">
+      <span class="tag">柔软针织</span>
+      <span class="tag">亲肤透气</span>
+      <span class="tag">弹性舒适</span>
+    </div>
+  </div>
+
+  <!-- 规格 -->
+  <div class="spec-section">
+    <div class="spec-title">选择尺码</div>
+    <div class="spec-list">
+      <div class="spec-item">S</div>
+      <div class="spec-item active">M</div>
+      <div class="spec-item">L</div>
+      <div class="spec-item">XL</div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+
+  <script>
+    const PAGE_ID = 'page1';
+    const PAGE_LABEL = '方案A：震动反馈';
+    let sessionId = null;
+    let imageClicks = 0;
+    let cartClicks = 0;
+    const enterTime = Date.now();
+
+    // 进入页面 - 记录
+    fetch('/api/enter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: PAGE_ID, page_label: PAGE_LABEL, enter_time: enterTime })
+    }).then(r => r.json()).then(d => { sessionId = d.session_id; });
+
+    // 离开页面 - 记录
+    function sendLeave() {
+      if (!sessionId) return;
+      const data = JSON.stringify({
+        session_id: sessionId,
+        leave_time: Date.now(),
+        image_clicks: imageClicks,
+        cart_clicks: cartClicks
+      });
+      navigator.sendBeacon('/api/leave', new Blob([data], { type: 'application/json' }));
+    }
+    window.addEventListener('beforeunload', sendLeave);
+    window.addEventListener('pagehide', sendLeave);
+
+    // 触发震动
+    function triggerHaptic() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate([80, 40, 80]);
+      }
+    }
+
+    // 图片点击 - 震动 + 视觉反馈
+    const wrap = document.getElementById('productImage');
+    wrap.addEventListener('click', function(e) {
+      imageClicks++;
+
+      // 震动
+      triggerHaptic();
+
+      // 视觉按压效果
+      wrap.classList.add('tapped');
+      setTimeout(() => wrap.classList.remove('tapped'), 200);
+
+      // 波纹动画
+      const rect = wrap.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const size = 60;
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple-ring';
+      ripple.style.cssText = `
+        width: ${size}px; height: ${size}px;
+        left: ${x - size/2}px; top: ${y - size/2}px;
+      `;
+      wrap.appendChild(ripple);
+      requestAnimationFrame(() => ripple.classList.add('animate'));
+      setTimeout(() => ripple.remove(), 700);
+
+      // 实时上报
+      if (sessionId) {
+        fetch('/api/click', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId, type: 'image' })
+        });
+      }
+    });
+
+    // 规格选择
+    document.querySelectorAll('.spec-item').forEach(el => {
+      el.addEventListener('click', function() {
+        document.querySelectorAll('.spec-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
