@@ -8,12 +8,8 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "xlsx": "^0.18.5",
-    "@netlify/blobs": "^8.1.0"
-  },
-  "devDependencies": {
     "express": "^4.18.2",
-    "better-sqlite3": "^9.4.3",
-    "cors": "^2.8.5"
+    "xlsx": "^0.18.5",
+    "@libsql/client": "^0.14.0"
   }
 }
