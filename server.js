@@ -6,9 +6,11 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 初始化 Turso 客户端
+// 初始化 Turso 客户端（libsql:// 转为 https:// 确保兼容 Render 网络）
+const rawUrl = process.env.TURSO_URL || 'file:local.db';
+const tursoUrl = rawUrl.startsWith('libsql://') ? rawUrl.replace('libsql://', 'https://') : rawUrl;
 const db = createClient({
-  url:   process.env.TURSO_URL   || 'file:local.db',
+  url: tursoUrl,
   authToken: process.env.TURSO_TOKEN || undefined
 });
 
